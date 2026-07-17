@@ -17,16 +17,8 @@
   "servers": [
     {
       "name": "Brilliant RP #1",
-      "ip": "141.95.190.145",
-      "port": 1357,
-      "x2": false,
-      "online": 0,
-      "maxonline": 50
-    },
-    {
-      "name": "Brilliant RP #2",
-      "ip": "141.95.190.146",
-      "port": 1358,
+      "ip": "188.127.241.8",
+      "port": 1350,
       "x2": false,
       "online": 0,
       "maxonline": 50
@@ -53,4 +45,4 @@
     "name": "1.0.0",
     "apk_url": ""
   }
-    }
+}
