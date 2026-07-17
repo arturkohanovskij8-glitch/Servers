@@ -22,6 +22,14 @@
       "x2": false,
       "online": 0,
       "maxonline": 50
+    },
+    {
+      "name": "Brilliant RP #2",
+      "ip": "141.95.190.145",
+      "port": 1358,
+      "x2": false,
+      "online": 0,
+      "maxonline": 50
     }
   ],
 
@@ -45,4 +53,4 @@
     "name": "1.0.0",
     "apk_url": ""
   }
-}
+    }
