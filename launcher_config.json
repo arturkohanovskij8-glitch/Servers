@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brilliant RP — два сервера</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #0b0d11;
+            color: #eef2f6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .app {
+            max-width: 500px;
+            width: 100%;
+            background: #14181e;
+            border-radius: 40px;
+            padding: 24px 20px 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid #2a313a;
+        }
+
+        /* Шапка */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: #1f2730;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 1px solid #2f3843;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .project-title {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #f0c27f, #fc5c7d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .project-sub {
+            font-size: 13px;
+            color: #8f9aa8;
+            margin-top: 2px;
+        }
+
+        /* Серверы */
+        .servers-section {
+            margin: 28px 0 24px;
+        }
+
+        .section-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 14px;
+        }
+
+        .section-label h3 {
+            font-size: 17px;
+            font-weight: 600;
+            color: #d4dce6;
+        }
+
+        .section-label span {
+            font-size: 13px;
+            color: #6f7c8b;
+        }
+
+        .server-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .server-card {
+            background: #1c232b;
+            border-radius: 22px;
+            padding: 16px 18px;
+            border: 1px solid #2a323c;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            row-gap: 8px;
+            transition: 0.15s;
+        }
+
+        .server-card:hover {
+            border-color: #3e4957;
+            background: #1f2832;
+        }
+
+        .server-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .server-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: #f0f4fa;
+        }
+
+        .server-ip {
+            font-size: 13px;
+            color: #8895a5;
+            font-family: 'SF Mono', 'Menlo', monospace;
+            letter-spacing: 0.2px;
+        }
+
+        .server-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .online-badge {
+            background: #1f3a2a;
+            color: #6cdb9a;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid #2d5440;
+            transition: 0.3s;
+        }
+
+        .online-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: #4cdb8a;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 6px #4cdb8a88;
+            transition: 0.3s;
+        }
+
+        .online-badge.offline {
+            background: #2d232a;
+            color: #b08a8a;
+            border-color: #553b3b;
+        }
+
+        .online-badge.offline .dot {
+            background: #b06a6a;
+            box-shadow: none;
+        }
+
+        .online-badge.loading {
+            opacity: 0.6;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .max-online {
+            font-size: 13px;
+            color: #6f7e8f;
+            background: #11181f;
+            padding: 3px 10px;
+            border-radius: 40px;
+            border: 1px solid #29323d;
+        }
+
+        .copy-btn {
+            background: #2b3541;
+            border: none;
+            color: #bcc9db;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.15s;
+            border: 1px solid #38424f;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .copy-btn:active {
+            background: #3f4b5b;
+            color: white;
+        }
+
+        .update-time {
+            font-size: 11px;
+            color: #5e6f80;
+            text-align: right;
+            margin-top: 6px;
+        }
+
+        /* Новости */
+        .news-teaser {
+            background: #11181f;
+            border-radius: 24px;
+            padding: 16px 18px;
+            margin: 16px 0 12px;
+            border: 1px solid #27303a;
+        }
+
+        .news-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: #e2eaf3;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+            font-size: 13px;
+            color: #7e8d9e;
+        }
+
+        .news-date {
+            background: #1e2731;
+            padding: 2px 12px;
+            border-radius: 40px;
+            font-size: 12px;
+        }
+
+        /* Ссылки */
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px 16px;
+            margin: 28px 0 12px;
+            padding-top: 16px;
+            border-top: 1px solid #232b34;
+        }
+
+        .footer-links a {
+            color: #9aabbd;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.15s;
+        }
+
+        .footer-links a:hover {
+            color: #e6edf5;
+        }
+
+        /* Версия */
+        .version-block {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            background: #10161d;
+            padding: 10px 16px;
+            border-radius: 40px;
+            border: 1px solid #25303b;
+            font-size: 13px;
+            color: #8493a5;
+        }
+
+        .version-code {
+            font-family: monospace;
+            background: #1b2430;
+            padding: 2px 14px;
+            border-radius: 40px;
+            color: #b6c9dd;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 12px;
+            color: #455563;
+        }
+
+        @media (max-width: 420px) {
+            .app {
+                padding: 16px;
+            }
+            .server-card {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .server-status {
+                justify-content: space-between;
+                margin-top: 4px;
+            }
+            .copy-btn {
+                align-self: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+
+        <!-- Шапка -->
+        <div class="header">
+            <div class="logo">
+                <img src="https://6942f009858f5.xvest5.ru/brilliant-cdn/logo.png" alt="Brilliant RP" onerror="this.style.display='none'" />
+            </div>
+            <div>
+                <div class="project-title">Brilliant RP</div>
+                <div class="project-sub">два сервера · roleplay</div>
+            </div>
+        </div>
+
+        <!-- Список серверов (2 шт.) -->
+        <div class="servers-section">
+            <div class="section-label">
+                <h3>⚡ Игровые серверы</h3>
+                <span id="serverCount">2 сервера</span>
+            </div>
+            <div class="server-list">
+
+                <!-- Сервер #1 -->
+                <div class="server-card" data-server="0">
+                    <div class="server-info">
+                        <div class="server-name">🌟 Brilliant RP #1</div>
+                        <div class="server-ip">141.95.190.145:1357</div>
+                    </div>
+                    <div class="server-status">
+                        <span class="online-badge offline" id="status0">
+                            <span class="dot"></span> <span id="online0">0</span>
+                        </span>
+                        <span class="max-online">/ <span id="max0">50</span></span>
+                        <button class="copy-btn" onclick="copyIP('141.95.190.145:1357')">📋 IP</button>
+                    </div>
+                </div>
+
+                <!-- Сервер #2 -->
+                <div class="server-card" data-server="1">
+                    <div class="server-info">
+                        <div class="server-name">🔥 Brilliant RP #2</div>
+                        <div class="server-ip">141.95.190.146:1358</div>
+                    </div>
+                    <div class="server-status">
+                        <span class="online-badge offline" id="status1">
+                            <span class="dot"></span> <span id="online1">0</span>
+                        </span>
+                        <span class="max-online">/ <span id="max1">50</span></span>
+                        <button class="copy-btn" onclick="copyIP('141.95.190.146:1358')">📋 IP</button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="update-time" id="updateTime">⏳ Обновление...</div>
+        </div>
+
+        <!-- Новости -->
+        <div class="news-teaser">
+            <div class="news-title">📰 Добро пожаловать!</div>
+            <div class="news-meta">
+                <span>Добро пожаловать на Brilliant RP!</span>
+                <span class="news-date">2026-06-05</span>
+            </div>
+        </div>
+
+        <!-- Ссылки -->
+        <div class="footer-links">
+            <a href="https://t.me/+1e1Gie_WTdU5YjFi" target="_blank">💎 Donate</a>
+            <a href="https://t.me/+1e1Gie_WTdU5YjFi" target="_blank">📋 Forum</a>
+            <a href="https://t.me/+1e1Gie_WTdU5YjFi" target="_blank">🛟 Support</a>
+            <a href="https://t.me/+1e1Gie_WTdU5YjFi" target="_blank">📱 Telegram</a>
+            <a href="https://t.me/+1e1Gie_WTdU5YjFi" target="_blank">🐦 VK</a>
+            <a href="https://t.me/+1e1Gie_WTdU5YjFi" target="_blank">🎮 Discord</a>
+        </div>
+
+        <!-- Версия -->
+        <div class="version-block">
+            <span>📦 v1.0.0</span>
+            <span class="version-code">code: 612622272</span>
+            <span style="font-size:12px; color:#5e6f80;">⚡ cache</span>
+        </div>
+
+        <div class="footer-note">два сервера · Brilliant RP #1 и #2</div>
+    </div>
+
+    <script>
+        // ============================================================
+        // 1. КОНФИГУРАЦИЯ
+        // ============================================================
+        const CONFIG = {
+            // URL твоего API (из cache.api_url)
+            API_URL: 'https://6942f009858f5.xvest5.ru/brilliant-cdn/api.json',
+            // Интервал обновления (мс) — 15 секунд
+            UPDATE_INTERVAL: 15000,
+            // Серверы (для резерва, если API недоступен)
+            fallbackServers: [
+                { name: 'Brilliant RP #1', ip: '141.95.190.145', port: 1357, online: 0, maxonline: 50 },
+                { name: 'Brilliant RP #2', ip: '141.95.190.146', port: 1358, online: 0, maxonline: 50 }
+            ]
+        };
+
+        // ============================================================
+        // 2. DOM-ЭЛЕМЕНТЫ
+        // ============================================================
+        const onlineElements = [document.getElementById('online0'), document.getElementById('online1')];
+        const statusElements = [document.getElementById('status0'), document.getElementById('status1')];
+        const maxElements = [document.getElementById('max0'), document.getElementById('max1')];
+        const updateTimeEl = document.getElementById('updateTime');
+
+        // ============================================================
+        // 3. ФУНКЦИЯ ОБНОВЛЕНИЯ
+        // ============================================================
+        async function fetchServerData() {
+            // Показываем, что идёт загрузка
+            statusElements.forEach(el => el.classList.add('loading'));
+
+            try {
+                const response = await fetch(CONFIG.API_URL, {
+                    cache: 'no-cache', // чтобы не брать из кэша браузера
+                    headers: { 'Cache-Control': 'no-cache' }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Проверяем, что есть массив servers
+                if (!data.servers || !Array.isArray(data.servers) || data.servers.length === 0) {
+                    throw new Error('Нет данных о серверах');
+                }
+
+                // Обновляем каждый сервер
+                data.servers.forEach((server, index) => {
+                    if (index >= onlineElements.length) return;
+
+                    const online = server.online ?? 0;
+                    const maxonline = server.maxonline ?? 50;
+
+                    // Онлайн
+                    onlineElements[index].textContent = online;
+
+                    // Максимум
+                    if (maxElements[index]) {
+                        maxElements[index].textContent = maxonline;
+                    }
+
+                    // Статус (онлайн/офлайн)
+                    if (statusElements[index]) {
+                        statusElements[index].classList.toggle('offline', online === 0);
+                        statusElements[index].classList.remove('loading');
+                    }
+                });
+
+                // Обновляем время
+                const now = new Date();
+                updateTimeEl.textContent = `🔄 Обновлено: ${now.toLocaleTimeString()}`;
+
+                // Если есть новости — обновим (опционально)
+                if (data.news && data.news.length > 0) {
+                    const news = data.news[0];
+                    const newsTitleEl = document.querySelector('.news-title');
+                    const newsMetaEl = document.querySelector('.news-meta span:first-child');
+                    const newsDateEl = document.querySelector('.news-date');
+
+                    if (newsTitleEl) newsTitleEl.textContent = `📰 ${news.title || 'Новость'}`;
+                    if (newsMetaEl) newsMetaEl.textContent = news.text || '';
+                    if (newsDateEl) newsDateEl.textContent = news.date || '';
+                }
+
+                // Версия (если есть)
+                if (data.version) {
+                    const versionEl = document.querySelector('.version-block span:first-child');
+                    const codeEl = document.querySelector('.version-code');
+                    if (versionEl && data.version.name) {
+                        versionEl.textContent = `📦 v${data.version.name}`;
+                    }
+                    if (codeEl && data.version.code) {
+                        codeEl.textContent = `code: ${data.version.code}`;
+                    }
+                }
+
+            } catch (error) {
+                console.warn('Ошибка загрузки данных:', error);
+
+                // Используем fallback-данные
+                CONFIG.fallbackServers.forEach((server, index) => {
+                    if (index >= onlineElements.length) return;
+                    onlineElements[index].textContent = server.online;
+                    if (maxElements[index]) {
+                        maxElements[index].textContent = server.maxonline;
+                    }
+                    statusElements[index].classList.toggle('offline', server.online === 0);
+                    statusElements[index].classList.remove('loading');
+                });
+
+                updateTimeEl.textContent = `⚠️ Ошибка, данные кэшированы (${new Date().toLocaleTimeString()})`;
+            }
+        }
+
+        // ============================================================
+        // 4. КОПИРОВАНИЕ IP
+        // ============================================================
+        function copyIP(text) {
+            navigator.clipboard?.writeText(text).then(() => {
+                const btn = event?.target?.closest?.('.copy-btn');
+                if (btn) {
+                    const orig = btn.textContent;
+                    btn.textContent = '✅ Скопировано';
+                    setTimeout(() => { btn.textContent = orig; }, 1500);
+                }
+            }).catch(() => {
+                // fallback
+                const input = document.createElement('input');
+                input.value = text;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                alert('IP скопирован: ' + text);
+            });
+        }
+
+        // ============================================================
+        // 5. ЗАПУСК
+        // ============================================================
+        // Первое обновление сразу
+        fetchServerData();
+
+        // Автообновление по интервалу
+        setInterval(fetchServerData, CONFIG.UPDATE_INTERVAL);
+
+        // Дополнительно: обновляем при возвращении вкладки (visibility change)
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                fetchServerData();
+            }
+        });
+
+        // ============================================================
+        // 6. РУЧНОЕ ОБНОВЛЕНИЕ ПО КЛИКУ (скрытое)
+        // ============================================================
+        // Можно обновить по клику на время обновления
+        updateTimeEl.style.cursor = 'pointer';
+        updateTimeEl.addEventListener('click', () => {
+            fetchServerData();
+            updateTimeEl.textContent = '🔄 Обновление...';
+        });
+    </script>
+</body>
+</html>
