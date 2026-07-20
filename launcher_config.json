@@ -17,13 +17,14 @@
   "servers": [
     {
       "name": "Brilliant RP #1",
-      "ip": "188.127.241.8",
-      "port": 1350,
+      "ip": "141.95.190.145",
+      "port": 1357,
       "x2": false,
       "online": 0,
       "maxonline": 50
     }
-  ],
+  ],
+
   "news": [
     {
       "title": "Добро пожаловать!",
@@ -32,7 +33,8 @@
       "date": "2026-06-05"
     }
   ],
-    "cache": {
+
+  "cache": {
     "enabled": false,
     "zip_url": "https://6942f009858f5.xvest5.ru/brilliant-cdn/cache.zip",
     "zip_sha256": "44766daa796315b89e2d8cd0b1d3d03e38eb3ebad98e37bcfa0f5bbb29bfc026",
